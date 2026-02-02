@@ -1,0 +1,138 @@
+UNIT 1 ASSIGNMENT
+Assessing and Improving the Forecast
+Performance of a Supply Chain
+Instructions
+In this unit assignment, you will:
+● Measure demand forecast performance
+● Generate demand forecast without seasonality
+● Generate demand forecast with seasonality
+● Assess supply chain demand variability
+AB InBev is the world's leading beverage and brewing company. Due to its three-tiered supply chain,
+there is a need to produce accurate demand forecasts to ensure efficient production for the supply
+chain.
+Except as indicated, use this document to record all your assignment work and responses to any
+questions. At a minimum, you will need to turn in a digital copy of this document as part of your
+assignment completion. You may also have additional supporting documents that you will need to
+submit. Your instructor will provide feedback to help you work through your findings.
+Note: Though your work will only be seen by those grading the course and will not be used or shared
+outside the course, you should take care to obscure any information you feel might be of a sensitive
+or confidential nature.
+Complete each assignment part as you progress through the course. Wait to submit the Unit 1
+Assignment until all parts are complete. Begin your assignment by completing Part One below. A
+submit button can be found on the Module 1.4 Assignment page in Canvas. Information about the
+grading rubric is available on any of the unit assignment pages online. Do not hesitate to contact your
+instructor if you have any questions about the assignment.
+
+===========================================================================
+
+Part One
+Measuring Demand Forecast Performance
+You've begun to conceptualize the importance of demand forecasting and how to do initial
+calculations including using formulas such as MAPE (Mean Absolute Percentage Error). In this part of
+the Unit 1 Assignment, you will measure the demand forecast performance for the provided scenario
+and dataset.
+
+1. For each of the product and wholesaler combinations, determine the weekly
+forecast MAPE (Mean Absolute Percentage Error) for every week in 2016 and
+2017.
+a. Download the provided 'AB InBev' dataset template to complete the requested
+calculations.
+b. Save this file as a word document and your spreadsheet template as an excel
+file using the naming convention
+"BANA6420_LastName,FirstName_Unit1Assignment", submitting both at the
+end of the unit for manual review.
+c. Which product and wholesaler combination has the largest forecast error? What
+is the range of forecast errors you have seen in the data? Provide your answer
+and any additional context.
+
+===========================================================================
+
+Part Two
+Generating Demand Forecast Without Seasonality
+You have continued to expand options for demand forecasting using the moving average and
+exponential smoothing methods. In this part of the Unit 1 Assignment, you will generate your own
+demand forecast. Use your saved spreadsheet template from Part 1 of the Unit 1 Assignment to
+resolve each of the following questions:
+
+1. Pick product Core 2 and Wholesaler 2. Without accounting for seasonality, use the
+first two thirds of weekly sales data to identify the best forecast method you can
+come up with (which could be moving average or exponential smoothing).
+a. Submit your solution in the Unit 1 Assignment spreadsheet.
+i. Download or continue using the provided dataset template for AB InBev to
+complete the requested calculations.
+ii. Save your spreadsheet file in an accepted format and submit it at the end of
+the unit. The submission should be clearly labeled as a separate file using the
+naming convention "BANA6420_LastName,FirstName_Unit1Assignment".
+b. Please detail your solution steps.
+
+2. Test your best forecast method with the last one third of weekly sales data.
+a. What is the MAPE from this test data?
+b. How does it compare to the MAPE from the training dataset (the first two thirds of
+weekly sales data)? What is your explanation for the difference?
+c. Were you able to improve the forecast performance calculated from Part One? What
+is your explanation for the change of the performance?
+
+===========================================================================
+
+Part Three
+Generating Demand Forecast With Seasonality
+You have added seasonality into how you generate your demand forecast, and used the steps
+needed to make this calculation. In this part of the Unit 1 Assignment, you will calculate using
+seasonality and compare how this impacts your demand forecast for the provided dataset. Use your
+saved spreadsheet template from Parts 1 and 2 of the Unit 1 Assignment to resolve each of the
+following questions:
+
+1. For each product (except for Craft 2 and Import, which have limited data), aggregate
+the sales across the five wholesalers and then determine the weekly seasonal index.
+a. Submit your solution in the Unit 1 Assignment spreadsheet.
+i. Download or continue using the provided dataset template for AB InBev and
+complete the requested calculations.
+ii. Save your spreadsheet file in an accepted format and submit it at the end of
+the unit. The submission should be clearly labeled as a separate file using the
+naming convention "BANA6420_LastName,FirstName_Unit1Assignment".
+b. Please detail your solution steps. Which product has the largest seasonal variation
+(determined by the variance of the weekly seasonal index)? Why?
+
+2. Pick product Core 2 and Wholesaler 2, as you did in Part Two, but this time use the
+provided steps to deseasonalize the sales data with the weekly seasonal index you
+just computed. Use the first two thirds of the deseasonalized weekly sales data to
+identify the best forecast method you can come up with as you did in Part Two.
+Then test your best forecast method together with your seasonal index using the last
+one third of (seasonalized) weekly sales data.
+a. Submit your solution in the spreadsheet.
+i. Download or continue using the provided dataset template for AB InBev and
+complete the requested calculations.
+ii. Save your spreadsheet file in an accepted format and submit it at the end of
+the unit. The submission should be clearly labeled as a separate file using the
+naming convention "BANA6420_LastName,FirstName_Unit1Assignment".
+b. Please detail your solution steps. What is the MAPE from this test data?
+c. Were you able to improve the forecast performance calculated from Part Two? What
+is your explanation for the change of the performance?
+
+===========================================================================
+
+Part Four
+Assessing Supply Chain Demand Variability
+You have further extended the supply chain demand variability assessment method by measuring
+shipment and demand variance. In this part of the Unit 1 Assignment, you will assess the supply
+chain bullwhip effect using these calculations. Use your saved spreadsheet template from Parts 1, 2,
+and 3 of the Unit 1 Assignment to resolve each of the following questions:
+
+1. For each of the product and wholesaler combinations, determine the monthly sales
+variance and shipment variance for 2017, and then calculate the bullwhip ratio.
+a. Download or continue using the provided dataset template for AB InBev and
+complete the requested calculations.
+b. Save your spreadsheet file in an accepted format and submit it along with this
+document on the Module 1.4 Assignment page in Canvas when you are done
+with this assignment part. The submission should be clearly labeled as a separate
+file using the naming convention
+"BANA6420_LastName,FirstName_Unit1Assignment".
+c. Please detail your solution steps. What happens if we assess the bullwhip ratio
+using weekly data?
+d. Which product and wholesaler combination has the largest bullwhip ratio? What is
+the range of bullwhip ratio you have seen in the data? Provide your answer and any
+additional context.
+e. What are the possible causes for the large bullwhip ratio you observed in the data?
+How would you design strategies to mitigate the supply chain bullwhip effect?
+
+===========================================================================
