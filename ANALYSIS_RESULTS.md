@@ -14,7 +14,7 @@ This analysis assesses and improves the forecast performance of AB InBev's three
 
 ### Q1: Weekly MAPE for Each Product and Wholesaler Combination
 
-We calculated the Mean Absolute Percentage Error (MAPE) for the 1-week ahead forecast compared to actual weekly sales for all 35 product/wholesaler combinations across 2016-2017.
+I calculated the Mean Absolute Percentage Error (MAPE) for the 1-week ahead forecast compared to actual weekly sales for all 35 product/wholesaler combinations across 2016-2017.
 
 #### Key Findings
 
@@ -85,7 +85,7 @@ We calculated the Mean Absolute Percentage Error (MAPE) for the 1-week ahead for
 
 ### Q2a: Exponential Smoothing Forecast Results for Core 2 / Wholesaler 2
 
-We developed a forecast using exponential smoothing (α = 0.3) for the Core 2 / Wholesaler 2 combination, trained on historical data and evaluated on held-out test data.
+I developed a forecast using exponential smoothing (α = 0.3) for the Core 2 / Wholesaler 2 combination, trained on historical data and evaluated on held-out test data.
 
 #### Methodology
 
@@ -114,6 +114,76 @@ We developed a forecast using exponential smoothing (α = 0.3) for the Core 2 / 
 - This represents a **31% improvement** over the baseline 1-week forecast (53.98% MAPE)
 - The model effectively captures short-term demand patterns without seasonality adjustment
 - The improvement suggests that exponential smoothing provides better accuracy than the baseline method for this product/wholesaler combination
+
+---
+
+## Part Three: Generating Demand Forecasts With Seasonality
+
+### Q1: Weekly Seasonal Index by Product
+
+I calculated the weekly seasonal index for each product by aggregating sales across all 5 wholesalers and dividing each week's sales by the overall average. Products Craft 2 and Import were excluded due to limited data.
+
+#### Methodology
+
+1. **Aggregate Sales**: Sum weekly sales across all 5 wholesalers for each product
+2. **Calculate Overall Average**: Compute mean of aggregated weekly sales
+3. **Compute Seasonal Index**: Divide each week's sales by the overall average
+4. **Calculate Variance**: Measure variance of seasonal indices to quantify seasonal variation
+
+#### Seasonal Index Variance by Product
+
+| Product | Variance | Rank |
+|---------|----------|------|
+| Core 3 | 0.239068 | 1 (Highest) |
+| Core 1 | 0.158116 | 2 |
+| Innovation | 0.122756 | 3 |
+| Craft 1 | 0.057541 | 4 |
+| Core 2 | 0.025702 | 5 (Lowest) |
+
+**Largest Seasonal Variation: Core 3** (variance = 0.239068)
+
+#### Why Core 3 Has the Largest Seasonal Variation
+
+Core 3 exhibits the highest seasonal variance because its demand pattern shows more pronounced peaks and troughs throughout the year compared to other products. This could be due to:
+- Stronger correlation with seasonal events or holidays
+- More variable promotional activity timing
+- Greater sensitivity to weather or seasonal consumption patterns
+
+### Q2: Forecast Core 2/Wholesaler 2 with Seasonality
+
+I applied seasonal adjustment to the Core 2/Wholesaler 2 forecast by deseasonalizing the training data, applying exponential smoothing, and reseasonalizing the test forecasts.
+
+#### Methodology
+
+1. **Deseasonalize Training Data**: Divide actual sales by seasonal index
+2. **Apply Exponential Smoothing**: Forecast on deseasonalized data (α = 0.3)
+3. **Reseasonalize Forecasts**: Multiply forecasts by seasonal index for test period
+4. **Evaluate**: Calculate MAPE on seasonalized test data
+
+#### Key Results
+
+| Metric | Value |
+|--------|-------|
+| Training Weeks | 68 |
+| Test Weeks | 35 |
+| **Test MAPE (with seasonality)** | **23.11%** |
+| Part Two MAPE (without seasonality) | 37.13% |
+| **Improvement** | **14.02 percentage points (38% better)** |
+
+#### Comparison Across Methods
+
+| Method | Test MAPE | Improvement vs Baseline |
+|--------|-----------|------------------------|
+| Baseline (1-week forecast) | 53.98% | — |
+| Exponential Smoothing (no seasonality) | 37.13% | 31% |
+| Exponential Smoothing (with seasonality) | 23.11% | 57% |
+
+#### Observations
+
+- Adding seasonality reduced MAPE from 37.13% to 23.11%, a **38% improvement**
+- The seasonal model achieves **57% better accuracy** than the original baseline forecast
+- Core 2 has relatively low seasonal variance (0.026), yet accounting for it still significantly improves forecasts
+- This demonstrates that even products with mild seasonality benefit from seasonal adjustment
 
 ---
 
