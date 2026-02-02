@@ -86,8 +86,8 @@ def main():
             # PART ONE, Q1
             results_df = part_one_q1(df_sales)
             
-            print(results_df.to_string(index=False))
-            print()
+            # print(results_df.to_string(index=False))
+            # print()
             
             # Summary statistics
             # print("-" * 80)
