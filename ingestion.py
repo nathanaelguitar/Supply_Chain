@@ -91,10 +91,10 @@ def print_schema(df):
     Args:
         df (pd.DataFrame): Input DataFrame
     """
-    print("\n" + "="*60)
+    print("\n" + "-"*60)
     print("SCHEMA INFORMATION")
-    print("="*60)
+    print("-"*60)
     schema_df = get_schema(df)
     print(schema_df.to_string(index=False))
     print(f"\nShape: {df.shape[0]} rows × {df.shape[1]} columns")
-    print("="*60 + "\n")
+    print("-"*60 + "\n")
