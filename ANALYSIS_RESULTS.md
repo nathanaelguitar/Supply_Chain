@@ -90,12 +90,13 @@ I developed a forecast using exponential smoothing (α = 0.3) for the Core 2 / W
 #### Methodology
 
 1. **Data Filtering**: Extracted all 103 weeks of Core 2 / Wholesaler 2 sales data
-2. **Train-Test Split**: 
+2. **Train-Test Split**:
    - Training set: First 68 weeks (66% of data)
    - Test set: Last 35 weeks (34% of data)
-3. **Exponential Smoothing**: Applied with smoothing parameter α = 0.3
+3. **Exponential Smoothing**: Applied one-step-ahead rolling forecasts with α = 0.3
    - Formula: $F(t) = \alpha \cdot D(t-1) + (1-\alpha) \cdot F(t-1)$
-4. **Evaluation**: Calculated MAPE on test period to measure out-of-sample accuracy
+   - Each forecast uses the previous period's actual value
+4. **Evaluation**: Calculated MAPE on test period forecasts to measure out-of-sample accuracy
 
 #### Key Results
 
@@ -104,14 +105,14 @@ I developed a forecast using exponential smoothing (α = 0.3) for the Core 2 / W
 | Total Weeks | 103 |
 | Training Weeks | 68 |
 | Test Weeks | 35 |
-| **Test MAPE (Exponential Smoothing)** | **37.13%** |
+| **Test MAPE (Exponential Smoothing)** | **29.88%** |
 | Baseline MAPE (1-week forecast) | 53.98% |
-| Improvement over Baseline | 16.85 percentage points |
+| Improvement over Baseline | 24.10 percentage points |
 
 #### Observations
 
-- The exponential smoothing model achieves **37.13% MAPE** on the test set
-- This represents a **31% improvement** over the baseline 1-week forecast (53.98% MAPE)
+- The exponential smoothing model achieves **29.88% MAPE** on the test set
+- This represents a **45% improvement** over the baseline 1-week forecast (53.98% MAPE)
 - The model effectively captures short-term demand patterns without seasonality adjustment
 - The improvement suggests that exponential smoothing provides better accuracy than the baseline method for this product/wholesaler combination
 
@@ -155,10 +156,11 @@ I applied seasonal adjustment to the Core 2/Wholesaler 2 forecast by deseasonali
 
 #### Methodology
 
-1. **Deseasonalize Training Data**: Divide actual sales by seasonal index
-2. **Apply Exponential Smoothing**: Forecast on deseasonalized data (α = 0.3)
-3. **Reseasonalize Forecasts**: Multiply forecasts by seasonal index for test period
-4. **Evaluate**: Calculate MAPE on seasonalized test data
+1. **Deseasonalize All Data**: Divide actual sales by seasonal index for both train and test periods
+2. **Apply Exponential Smoothing**: Generate one-step-ahead forecasts on deseasonalized data (α = 0.3)
+3. **Extract Test Forecasts**: Take forecasts corresponding to test period
+4. **Reseasonalize Forecasts**: Multiply forecasts by seasonal index for test period
+5. **Evaluate**: Calculate MAPE on reseasonalized test forecasts vs actual test data
 
 #### Key Results
 
@@ -166,24 +168,24 @@ I applied seasonal adjustment to the Core 2/Wholesaler 2 forecast by deseasonali
 |--------|-------|
 | Training Weeks | 68 |
 | Test Weeks | 35 |
-| **Test MAPE (with seasonality)** | **23.11%** |
-| Part Two MAPE (without seasonality) | 37.13% |
-| **Improvement** | **14.02 percentage points (38% better)** |
+| **Test MAPE (with seasonality)** | **28.94%** |
+| Part Two MAPE (without seasonality) | 29.88% |
+| **Improvement** | **0.94 percentage points (3% better)** |
 
 #### Comparison Across Methods
 
 | Method | Test MAPE | Improvement vs Baseline |
 |--------|-----------|------------------------|
 | Baseline (1-week forecast) | 53.98% | — |
-| Exponential Smoothing (no seasonality) | 37.13% | 31% |
-| Exponential Smoothing (with seasonality) | 23.11% | 57% |
+| Exponential Smoothing (no seasonality) | 29.88% | 45% |
+| Exponential Smoothing (with seasonality) | 28.94% | 46% |
 
 #### Observations
 
-- Adding seasonality reduced MAPE from 37.13% to 23.11%, a **38% improvement**
-- The seasonal model achieves **57% better accuracy** than the original baseline forecast
-- Core 2 has relatively low seasonal variance (0.026), yet accounting for it still significantly improves forecasts
-- This demonstrates that even products with mild seasonality benefit from seasonal adjustment
+- Adding seasonality reduced MAPE from 29.88% to 28.94%, a **3% improvement**
+- The seasonal model achieves **46% better accuracy** than the original baseline forecast
+- Core 2 has the lowest seasonal variance (0.026) among analyzed products, which explains the modest improvement from seasonal adjustment
+- For products with stronger seasonality (e.g., Core 3 with variance 0.239), seasonal adjustment would likely yield larger improvements
 
 ---
 
@@ -278,27 +280,6 @@ pip install pandas openpyxl numpy pdfplumber
 # Run analysis
 python Assignment1.py
 ```
-
----
-
-## Next Steps
-
-The remaining assignment parts will focus on:
-
-1. **Part Two**: Develop improved forecasts for Core 2/Wholesaler 2
-   - Test moving average and exponential smoothing methods
-   - Split data into training (2/3) and test (1/3) sets
-   - Compare performance against baseline
-
-2. **Part Three**: Add seasonality to forecasts
-   - Calculate seasonal indices by product
-   - Deseasonalize, forecast, and reseasonalize
-   - Evaluate improvement from seasonal adjustment
-
-3. **Part Four**: Assess bullwhip effect
-   - Calculate monthly variance for shipments and demand
-   - Compute bullwhip ratio for all combinations
-   - Identify products/wholesalers with high amplification
 
 ---
 

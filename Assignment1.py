@@ -47,25 +47,28 @@ def part_one_q1(df_sales: pd.DataFrame) -> pd.DataFrame:
 # PART TWO: GENERATING DEMAND FORECASTS WITHOUT SEASONALITY
 def part_two_q1(df_sales: pd.DataFrame) -> Dict:
     """Forecast Core 2/Wholesaler 2 without seasonality."""
-    
+
     # Filter for Core 2 / Wholesaler 2
     mask = (df_sales['PDCN'] == 'Core 2') & (df_sales['Wslr'] == 'Wholesaler 2')
-    combo_data = df_sales[mask].copy()
-    
+    combo_data = df_sales[mask].copy().sort_values('Week Beginning').reset_index(drop=True)
+
     # Split 2/3 train, 1/3 test
     split_idx = int(len(combo_data) * 2/3)
     train = combo_data.iloc[:split_idx]
     test = combo_data.iloc[split_idx:]
-    
+
     # Get actuals
     train_actuals = train["Week's Sales (Barrels)"].tolist()
     test_actuals = test["Week's Sales (Barrels)"].tolist()
-    
-    # Generate forecasts for test period using exponential smoothing
-    forecasts = exponential_smoothing_series(train_actuals, alpha=0.3)
-    
+
+    # Generate one-step-ahead forecasts using exponential smoothing
+    # Run ES on full series, then extract test period forecasts
+    all_actuals = train_actuals + test_actuals
+    all_forecasts = exponential_smoothing_series(all_actuals, alpha=0.3)
+    test_forecasts = all_forecasts[split_idx:]
+
     # Calculate MAPE on test period
-    test_mape = mape(test_actuals, forecasts[-len(test_actuals):])
+    test_mape = mape(test_actuals, test_forecasts)
     
     return {
         'product': 'Core 2',
@@ -139,26 +142,25 @@ def part_three_q2(df_sales: pd.DataFrame, seasonal_results: Dict) -> Dict:
     split_idx = int(len(combo_data) * 2/3)
     train = combo_data.iloc[:split_idx]
     test = combo_data.iloc[split_idx:]
-    
+
     # Get actuals and seasonal indices
     train_actuals = train["Week's Sales (Barrels)"].tolist()
     train_si = train['seasonal_index'].tolist()
     test_actuals = test["Week's Sales (Barrels)"].tolist()
     test_si = test['seasonal_index'].tolist()
-    
-    # Deseasonalize training data
-    train_deseasonalized = deseasonalize(train_actuals, train_si)
-    
-    # Generate forecasts on deseasonalized data using exponential smoothing
-    deseasonalized_forecasts = exponential_smoothing_series(train_deseasonalized, alpha=0.3)
-    
-    # Extend forecasts into test period (use last forecast value as base)
-    last_forecast = deseasonalized_forecasts[-1]
-    test_deseasonalized_forecasts = [last_forecast] * len(test_actuals)
-    
+
+    # Deseasonalize all data
+    all_actuals = train_actuals + test_actuals
+    all_si = train_si + test_si
+    all_deseasonalized = deseasonalize(all_actuals, all_si)
+
+    # Generate one-step-ahead forecasts on deseasonalized data using exponential smoothing
+    all_deseasonalized_forecasts = exponential_smoothing_series(all_deseasonalized, alpha=0.3)
+    test_deseasonalized_forecasts = all_deseasonalized_forecasts[split_idx:]
+
     # Reseasonalize the test forecasts
     test_forecasts = reseasonalize(test_deseasonalized_forecasts, test_si)
-    
+
     # Calculate MAPE on test period
     test_mape = mape(test_actuals, test_forecasts)
     
@@ -170,6 +172,68 @@ def part_three_q2(df_sales: pd.DataFrame, seasonal_results: Dict) -> Dict:
         'mape': test_mape,
         'seasonal_variance': core2_seasonal['variance']
     }
+
+
+# PART FOUR: ASSESSING SUPPLY CHAIN DEMAND VARIABILITY
+def part_four_q1(df_sales: pd.DataFrame, df_shipments: pd.DataFrame) -> pd.DataFrame:
+    """Calculate bullwhip ratio for each product/wholesaler combination using 2017 monthly data."""
+    
+    # Filter for 2017 only
+    df_sales_2017 = df_sales[df_sales['Week Beginning'].dt.year == 2017].copy()
+    df_shipments_2017 = df_shipments[df_shipments['Year'] == 2017].copy()
+    
+    results = []
+    
+    # Get unique products and wholesalers
+    products = df_sales_2017['PDCN'].unique()
+    wholesalers = df_sales_2017['Wslr'].unique()
+    
+    for product in products:
+        for wholesaler in wholesalers:
+            # Filter sales (demand) data
+            sales_mask = (df_sales_2017['PDCN'] == product) & (df_sales_2017['Wslr'] == wholesaler)
+            sales_data = df_sales_2017[sales_mask].copy()
+            
+            # Filter shipment data
+            ship_mask = (df_shipments_2017['Product'] == product) & (df_shipments_2017['Wholesaler'] == wholesaler)
+            ship_data = df_shipments_2017[ship_mask].copy()
+            
+            if len(sales_data) == 0 or len(ship_data) == 0:
+                continue
+            
+            # Aggregate to monthly for sales
+            sales_data['Month'] = sales_data['Week Beginning'].dt.to_period('M')
+            monthly_demand = sales_data.groupby('Month')["Week's Sales (Barrels)"].sum()
+            
+            # Aggregate to monthly for shipments
+            monthly_shipments = ship_data.groupby('Month')['Barrels'].sum()
+            
+            # Need at least 2 months for variance calculation
+            if len(monthly_demand) < 2 or len(monthly_shipments) < 2:
+                continue
+            
+            try:
+                var_demand = sample_variance(monthly_demand.values)
+                var_shipments = sample_variance(monthly_shipments.values)
+                
+                if var_demand > 0:
+                    bullwhip = var_shipments / var_demand
+                else:
+                    bullwhip = float('inf')
+                
+                results.append({
+                    'Product': product,
+                    'Wholesaler': wholesaler,
+                    'Var(Demand)': var_demand,
+                    'Var(Shipments)': var_shipments,
+                    'Bullwhip Ratio': bullwhip,
+                    'Months': len(monthly_demand)
+                })
+            except ValueError:
+                continue
+    
+    results_df = pd.DataFrame(results).sort_values('Bullwhip Ratio', ascending=False)
+    return results_df
 
 
 def main():
@@ -240,6 +304,28 @@ def main():
             # improvement = part_two_results['mape'] - part_three_results['mape']
             # print(f"Improvement: {improvement:.2f} percentage points")
             # print("-" * 80)
+            
+            # PART FOUR
+            df_shipments = ingest_excel(file_name, sheet_name='Shipment Data')
+            if df_shipments is not None:
+                bullwhip_results = part_four_q1(df_sales, df_shipments)
+                
+                print("-" * 80)
+                print("PART FOUR: BULLWHIP EFFECT ANALYSIS (2017 Monthly Data)")
+                print("-" * 80)
+                print(bullwhip_results.to_string(index=False))
+                print()
+                
+                # Summary
+                print("-" * 40)
+                print("Summary:")
+                print(f"Largest bullwhip ratio: {bullwhip_results.iloc[0]['Product']} / {bullwhip_results.iloc[0]['Wholesaler']}")
+                print(f"  Ratio = {bullwhip_results.iloc[0]['Bullwhip Ratio']:.4f}")
+                
+                min_bw = bullwhip_results['Bullwhip Ratio'].min()
+                max_bw = bullwhip_results['Bullwhip Ratio'].max()
+                print(f"\nRange of bullwhip ratios: {min_bw:.4f} to {max_bw:.4f}")
+                print("-" * 80)
             
     except Exception as e:
         import traceback
