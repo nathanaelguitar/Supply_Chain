@@ -90,16 +90,16 @@ def main():
             print()
             
             # Summary statistics
-            print("-" * 80)
-            print("SUMMARY STATISTICS:")
-            print("-" * 80)
-            print(f"Largest forecast error: {results_df.iloc[0]['Product']} / {results_df.iloc[0]['Wholesaler']}")
-            print(f"  MAPE = {results_df.iloc[0]['MAPE (%)']:.2f}%\n")
-            
-            min_mape = results_df['MAPE (%)'].min()
-            max_mape = results_df['MAPE (%)'].max()
-            print(f"Range of forecast errors: {min_mape:.2f}% to {max_mape:.2f}%")
-            print(f"Range span: {max_mape - min_mape:.2f}%\n")
+            # print("-" * 80)
+            # print("SUMMARY STATISTICS:")
+            # print("-" * 80)
+            # print(f"Largest forecast error: {results_df.iloc[0]['Product']} / {results_df.iloc[0]['Wholesaler']}")
+            # print(f"  MAPE = {results_df.iloc[0]['MAPE (%)']:.2f}%\n")
+            # 
+            # min_mape = results_df['MAPE (%)'].min()
+            # max_mape = results_df['MAPE (%)'].max()
+            # print(f"Range of forecast errors: {min_mape:.2f}% to {max_mape:.2f}%")
+            # print(f"Range span: {max_mape - min_mape:.2f}%\n")
             
             # PART TWO, Q2a
             part_two_results = part_two_q1(df_sales)
