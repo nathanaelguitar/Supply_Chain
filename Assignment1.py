@@ -43,43 +43,7 @@ def part_one_q1(df_sales: pd.DataFrame) -> pd.DataFrame:
     return results_df
 
 
-def main():
-    file_name = "bana6420_u1_assigment-ab-inbev-data.xlsx"
-    
-    try:
-        # Load the Sales & Demand Forecasts sheet
-        df_sales = ingest_excel(file_name, sheet_name='Sales & Demand Forecasts')
-        
-        if df_sales is not None:
-            # PART ONE, Q1
-            results_df = part_one_q1(df_sales)
-            
-            print(results_df.to_string(index=False))
-            print()
-            
-            # Summary statistics
-            print("-" * 80)
-            print("SUMMARY STATISTICS:")
-            print("-" * 80)
-            print(f"Largest forecast error: {results_df.iloc[0]['Product']} / {results_df.iloc[0]['Wholesaler']}")
-            print(f"  MAPE = {results_df.iloc[0]['MAPE (%)']:.2f}%\n")
-            
-            min_mape = results_df['MAPE (%)'].min()
-            max_mape = results_df['MAPE (%)'].max()
-            print(f"Range of forecast errors: {min_mape:.2f}% to {max_mape:.2f}%")
-            print(f"Range span: {max_mape - min_mape:.2f}%\n")
-            
-    except Exception as e:
-        import traceback
-        print(f"Error: {e}")
-        traceback.print_exc()
-
-
-if __name__ == "__main__":
-    main()
-
-
-# Part Two: Generating Demand Forecasts Without Seasonality
+# PART TWO: GENERATING DEMAND FORECASTS WITHOUT SEASONALITY
 def part_two_q1(df_sales: pd.DataFrame) -> Dict:
     """Forecast Core 2/Wholesaler 2 without seasonality."""
     
@@ -109,3 +73,52 @@ def part_two_q1(df_sales: pd.DataFrame) -> Dict:
         'test_weeks': len(test),
         'mape': test_mape
     }
+
+
+def main():
+    file_name = "bana6420_u1_assigment-ab-inbev-data.xlsx"
+    
+    try:
+        # Load the Sales & Demand Forecasts sheet
+        df_sales = ingest_excel(file_name, sheet_name='Sales & Demand Forecasts')
+        
+        if df_sales is not None:
+            # PART ONE, Q1
+            results_df = part_one_q1(df_sales)
+            
+            print(results_df.to_string(index=False))
+            print()
+            
+            # Summary statistics
+            print("-" * 80)
+            print("SUMMARY STATISTICS:")
+            print("-" * 80)
+            print(f"Largest forecast error: {results_df.iloc[0]['Product']} / {results_df.iloc[0]['Wholesaler']}")
+            print(f"  MAPE = {results_df.iloc[0]['MAPE (%)']:.2f}%\n")
+            
+            min_mape = results_df['MAPE (%)'].min()
+            max_mape = results_df['MAPE (%)'].max()
+            print(f"Range of forecast errors: {min_mape:.2f}% to {max_mape:.2f}%")
+            print(f"Range span: {max_mape - min_mape:.2f}%\n")
+            
+            # PART TWO, Q2a
+            part_two_results = part_two_q1(df_sales)
+            
+            # print("-" * 80)
+            # print("PART TWO: DEMAND FORECASTS WITHOUT SEASONALITY")
+            # print("-" * 80)
+            # print(f"Product: {part_two_results['product']}")
+            # print(f"Wholesaler: {part_two_results['wholesaler']}")
+            # print(f"Training weeks: {part_two_results['train_weeks']}")
+            # print(f"Test weeks: {part_two_results['test_weeks']}")
+            # print(f"Test MAPE (Exponential Smoothing, α=0.3): {part_two_results['mape']:.2f}%")
+            # print("-" * 80)
+            
+    except Exception as e:
+        import traceback
+        print(f"Error: {e}")
+        traceback.print_exc()
+
+
+if __name__ == "__main__":
+    main()

@@ -81,6 +81,42 @@ We calculated the Mean Absolute Percentage Error (MAPE) for the 1-week ahead for
 
 ---
 
+## Part Two: Generating Demand Forecasts Without Seasonality
+
+### Q2a: Exponential Smoothing Forecast Results for Core 2 / Wholesaler 2
+
+We developed a forecast using exponential smoothing (α = 0.3) for the Core 2 / Wholesaler 2 combination, trained on historical data and evaluated on held-out test data.
+
+#### Methodology
+
+1. **Data Filtering**: Extracted all 103 weeks of Core 2 / Wholesaler 2 sales data
+2. **Train-Test Split**: 
+   - Training set: First 68 weeks (66% of data)
+   - Test set: Last 35 weeks (34% of data)
+3. **Exponential Smoothing**: Applied with smoothing parameter α = 0.3
+   - Formula: $F(t) = \alpha \cdot D(t-1) + (1-\alpha) \cdot F(t-1)$
+4. **Evaluation**: Calculated MAPE on test period to measure out-of-sample accuracy
+
+#### Key Results
+
+| Metric | Value |
+|--------|-------|
+| Total Weeks | 103 |
+| Training Weeks | 68 |
+| Test Weeks | 35 |
+| **Test MAPE (Exponential Smoothing)** | **37.13%** |
+| Baseline MAPE (1-week forecast) | 53.98% |
+| Improvement over Baseline | 16.85 percentage points |
+
+#### Observations
+
+- The exponential smoothing model achieves **37.13% MAPE** on the test set
+- This represents a **31% improvement** over the baseline 1-week forecast (53.98% MAPE)
+- The model effectively captures short-term demand patterns without seasonality adjustment
+- The improvement suggests that exponential smoothing provides better accuracy than the baseline method for this product/wholesaler combination
+
+---
+
 ## Code Organization
 
 The analysis is implemented using a modular Python structure:
