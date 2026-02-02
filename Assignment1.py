@@ -43,23 +43,6 @@ def part_one_q1(df_sales: pd.DataFrame) -> pd.DataFrame:
     return results_df
 
 
-def run_part(part_num: int, question_num: int, title: str, func, *args):
-    """
-    Run a part of the assignment and display results with formatted header.
-    
-    Args:
-        part_num (int): Part number (e.g., 1, 2, 3, 4)
-        question_num (int): Question number (e.g., 1)
-        title (str): Title of the analysis
-        func: Function to call
-        *args: Arguments to pass to func
-    """
-    print(f"\nPART {part_num}, Q{question_num}: {title}")
-    print("-" * 80)
-    result = func(*args)
-    return result
-
-
 def main():
     file_name = "bana6420_u1_assigment-ab-inbev-data.xlsx"
     
@@ -69,18 +52,13 @@ def main():
         
         if df_sales is not None:
             # PART ONE, Q1
-            results_df = run_part(
-                1, 1,
-                "Weekly MAPE for each Product and Wholesaler combination",
-                part_one_q1,
-                df_sales
-            )
+            results_df = part_one_q1(df_sales)
             
             print(results_df.to_string(index=False))
             print()
             
             # Summary statistics
-            print("\n" + "-" * 80)
+            print("-" * 80)
             print("SUMMARY STATISTICS:")
             print("-" * 80)
             print(f"Largest forecast error: {results_df.iloc[0]['Product']} / {results_df.iloc[0]['Wholesaler']}")
