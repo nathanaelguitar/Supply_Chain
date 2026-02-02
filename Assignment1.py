@@ -1,9 +1,47 @@
+import pandas as pd
 from ingestion import ingest_excel, list_sheet_names, print_schema
 from forecasting import mape, measure_bullwhip_effect, exponential_smoothing_series
 
 
+def part_one_q1(df_sales: pd.DataFrame) -> pd.DataFrame:
+    """Calculate weekly MAPE for each product and wholesaler combination."""
+    
+    results = []
+    
+    # Get unique combinations of product and wholesaler
+    for product in df_sales['PDCN'].unique():
+        for wholesaler in df_sales['Wslr'].unique():
+            # Filter data for this combination
+            mask = (df_sales['PDCN'] == product) & (df_sales['Wslr'] == wholesaler)
+            combo_data = df_sales[mask].copy()
+            
+            # Skip if no data for this combination
+            if len(combo_data) == 0:
+                continue
+            
+            # Calculate MAPE for this combination
+            actuals = combo_data["Week's Sales (Barrels)"].tolist()
+            forecasts = combo_data['1 Week Forecast Demand'].tolist()
+            
+            try:
+                combo_mape = mape(actuals, forecasts)
+                num_weeks = len(combo_data)
+                
+                results.append({
+                    'Product': product,
+                    'Wholesaler': wholesaler,
+                    'MAPE (%)': combo_mape,
+                    'Weeks': num_weeks
+                })
+            except ValueError:
+                # Skip if MAPE calculation fails (e.g., all actuals are zero)
+                pass
+    
+    results_df = pd.DataFrame(results).sort_values('MAPE (%)', ascending=False)
+    return results_df
+
+
 def main():
-    # Load Sales & Demand Forecasts sheet
     file_name = "bana6420_u1_assigment-ab-inbev-data.xlsx"
     
     try:
@@ -15,58 +53,29 @@ def main():
         df_sales = ingest_excel(file_name, sheet_name='Sales & Demand Forecasts')
         
         if df_sales is not None:
-            # Print schema information
-            print_schema(df_sales)
+            print("="*80)
+            print("PART ONE: MEASURING DEMAND FORECAST PERFORMANCE")
+            print("="*80)
+            print("\nQ1: Weekly MAPE for each Product and Wholesaler combination\n")
             
-            # Print first few rows
-            print("First few rows:")
-            print(df_sales.head(10))
-            print("\n")
+            # Calculate MAPE for all combinations
+            results_df = part_one_q1(df_sales)
             
-            # Calculate MAPE for demand forecast vs actual sales
-            actuals = df_sales["Week's Sales (Barrels)"].tolist()
-            forecasts = df_sales['1 Week Forecast Demand'].tolist()
+            print(results_df.to_string(index=False))
+            print()
             
-            mape_score = mape(actuals, forecasts)
-            print(f"Overall MAPE: {mape_score:.2f}%\n")
+            # Summary statistics
+            print("\n" + "="*80)
+            print("SUMMARY STATISTICS:")
+            print("="*80)
+            print(f"Largest forecast error: {results_df.iloc[0]['Product']} / {results_df.iloc[0]['Wholesaler']}")
+            print(f"  MAPE = {results_df.iloc[0]['MAPE (%)']:.2f}%\n")
             
-            # Group by Wholesaler and calculate MAPE
-            print("MAPE by Wholesaler:")
-            for wslr in df_sales['Wslr'].unique():
-                mask = df_sales['Wslr'] == wslr
-                wslr_actuals = df_sales.loc[mask, "Week's Sales (Barrels)"].tolist()
-                wslr_forecasts = df_sales.loc[mask, '1 Week Forecast Demand'].tolist()
-                try:
-                    wslr_mape = mape(wslr_actuals, wslr_forecasts)
-                    print(f"  {wslr}: {wslr_mape:.2f}%")
-                except ValueError as e:
-                    print(f"  {wslr}: Error - {e}")
+            min_mape = results_df['MAPE (%)'].min()
+            max_mape = results_df['MAPE (%)'].max()
+            print(f"Range of forecast errors: {min_mape:.2f}% to {max_mape:.2f}%")
+            print(f"Range span: {max_mape - min_mape:.2f}%\n")
             
-            print("\n" + "="*60 + "\n")
-            
-            # Now load Shipment Data for bullwhip analysis
-            df_shipment = ingest_excel(file_name, sheet_name='Shipment Data')
-            
-            if df_shipment is not None:
-                print_schema(df_shipment)
-                
-                print("Measuring Bullwhip Effect...")
-                print("="*60 + "\n")
-                
-                # Overall bullwhip ratio (monthly aggregation)
-                result = measure_bullwhip_effect(
-                    df_shipment,
-                    date_col='Week Beginning',
-                    demand_col='Barrels',
-                    shipments_col='Barrels',  # In this case, shipments ARE barrels
-                    freq='M'
-                )
-                
-                print(f"Overall Bullwhip Ratio: {result.bullwhip_ratio:.4f}")
-                print(f"Var(Shipments): {result.var_shipments:.2f}")
-                print(f"Var(Demand): {result.var_demand:.2f}")
-                print(f"Periods analyzed: {result.n_periods_used}\n")
-                
     except Exception as e:
         import traceback
         print(f"Error: {e}")
@@ -75,4 +84,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
 

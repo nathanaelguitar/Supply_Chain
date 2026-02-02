@@ -1,9 +1,10 @@
 import pandas as pd
 import os
 from pathlib import Path
+from typing import Union, Optional
 
 
-def load_excel_file(file_path, sheet_name=0):
+def load_excel_file(file_path: str, sheet_name: Union[str, int] = 0) -> Optional[pd.DataFrame]:
     """
     Load an Excel file into a pandas DataFrame.
     
@@ -45,7 +46,7 @@ def list_sheet_names(file_path):
         return None
 
 
-def ingest_excel(file_name, sheet_name=0):
+def ingest_excel(file_name: str, sheet_name: Union[str, int] = 0) -> Optional[pd.DataFrame]:
     """
     Ingest an Excel file from the data directory.
     
