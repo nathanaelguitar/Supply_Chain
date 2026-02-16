@@ -1,0 +1,224 @@
+UNIT 2 ASSIGNMENT ANSWERS (Cosmos)
+Source: u2_inventory_optimization.py outputs
+
+================================================================================
+PART ONE
+================================================================================
+
+1. For each of the supply chain locations, determine the optimal base stock level and the safety stock requirement.
+
+Answer:
+
+Service level target = 98%, z = 2.054
+
+Albany DC
+- Safety Stock: 707.87 units
+- Base Stock Level: 2,747.87 units
+
+Brooklyn DC
+- Safety Stock: 492.90 units
+- Base Stock Level: 2,112.90 units
+
+Syracuse DC
+- Safety Stock: 707.87 units
+- Base Stock Level: 2,067.87 units
+
+Brooklyn RDC (aggregated demand)
+- Safety Stock: 1,847.00 units
+- Base Stock Level: 8,307.00 units
+
+I computed the z-value for the 98% service target (z = 2.054) and then calculated sigma(R+L) using sqrt(s^2 * lambda^2 + (R+L) * sigma^2) at each location. Safety stock is z times sigma(R+L), and base stock is expected demand over the exposure period plus safety stock, which is lambda * (R+L) + safety stock.
+
+--------------------------------------------------------------------------------
+2. Pick the Brooklyn RDC location, plot the safety stock inventory-service tradeoff curve for target fill rate ranging from 80% to 99%.
+
+Answer:
+
+Brooklyn RDC sigma(R+L) = 899.33
+Safety Stock = z * 899.33
+
+Service Level | z-value | Safety Stock (units)
+0.80          | 0.842   | 756.90
+0.85          | 1.036   | 932.10
+0.90          | 1.282   | 1,152.54
+0.95          | 1.645   | 1,479.27
+0.96          | 1.751   | 1,574.44
+0.97          | 1.881   | 1,691.45
+0.98          | 2.054   | 1,847.00
+0.99          | 2.326   | 2,092.15
+
+I kept the Brooklyn RDC's sigma(R+L) fixed at 899.33 and varied the target fill rate from 80% to 99%. For each service level, I computed the z-value using NORMSINV and multiplied it by 899.33 to get the required safety stock. Plotting service level on the x-axis and safety stock on the y-axis gives the tradeoff curve.
+
+--------------------------------------------------------------------------------
+3. A recent audit of the Brooklyn RDC over the past year's performance revealed that the RDC's average safety stock had been at 7 days of supply (meaning the safety stock can last for 7 days of demand), while an average fill level of 96% was achieved.
+
+Do you think that the RDC's inventory management has been efficient? Why?
+
+Answer:
+
+No, it is not efficient. Seven days of supply at the RDC equals 2,660 units (7 * 380), which implies a service level around 99.85%, yet the audit reports only 96% fill rate. That means they are holding more inventory than the scientific policy requires while delivering worse service. Under the base-stock policy, the RDC needs only 1,847 units to hit 98% service, so the current approach is both more expensive and less effective.
+
+--------------------------------------------------------------------------------
+4. What is the magnitude of improvement that you think can be made as a result of using scientific inventory methods (e.g., what service improvement could be achieved with the same inventory levels, or how much inventory could be reduced without any service degradation)?
+
+Answer:
+
+With 2,660 units of safety stock (current 7-day supply), the scientific method would achieve approximately 99.85% service level instead of the current 96%. Alternatively, to maintain the same 96% service level scientifically, only 1,574 units of safety stock would be required (z = 1.751 for 96%), representing a reduction of 1,086 units (41% reduction) without any service degradation.
+
+The potential annual savings from reducing safety stock by 1,086 units:
+= 1,086 units × $800/unit × 25% holding rate = $217,200 per year
+
+================================================================================
+PART TWO
+================================================================================
+
+1. Suppose that the DCs have been introduced to scientific inventory management practices. How much are cycle stock, pipeline stock (from the RDC to the DCs), and safety stock at each of the three DCs?
+
+Answer:
+
+Albany DC
+- Cycle Stock: 420.00 units
+- Pipeline Stock: 1,200.00 units
+- Safety Stock: 707.87 units
+
+Brooklyn DC
+- Cycle Stock: 630.00 units
+- Pipeline Stock: 360.00 units
+- Safety Stock: 492.90 units
+
+Syracuse DC
+- Cycle Stock: 280.00 units
+- Pipeline Stock: 800.00 units
+- Safety Stock: 707.87 units
+
+For each DC, I computed cycle stock as 0.5 * lambda * R (half the average order quantity), pipeline stock as lambda * L (inventory in transit), and safety stock as z * sigma(R+L). These formulas capture the average inventory during the reorder cycle, inventory in transit, and the buffer for demand and lead time uncertainty.
+
+--------------------------------------------------------------------------------
+2. What are the average inventory cost, transportation cost, and the total supply chain cost of the three DCs (including all pipeline stock)?
+
+Answer:
+
+Albany DC
+- Annual Holding Cost: $494,673.09
+- Annual Transportation Cost: $87,600.00
+- Total Annual Cost: $582,273.09
+
+Brooklyn DC
+- Annual Holding Cost: $315,116.19
+- Annual Transportation Cost: $16,425.00
+- Total Annual Cost: $331,541.19
+
+Syracuse DC
+- Annual Holding Cost: $379,923.09
+- Annual Transportation Cost: $65,700.00
+- Total Annual Cost: $445,623.09
+
+TOTAL for three DCs
+- Total Holding Cost: $1,189,712.37
+- Total Transportation Cost: $169,725.00
+- Total Annual Cost: $1,359,437.37
+
+I first summed cycle, pipeline, and safety stock to get total inventory at each DC. Holding cost is unit value ($850) times the annual holding rate (25%) times total inventory. Transportation cost is the per-unit transport rate multiplied by daily demand and 365 days. The total annual cost for each DC is the sum of holding and transportation costs, and the system total is the sum across all three DCs.
+
+================================================================================
+PART THREE
+================================================================================
+
+1. Suppose that the RDC has also been introduced to scientific inventory management practices. Assume the demands at the DCs are independent. How much are cycle stock, pipeline stock (from the plant to the RDC), and safety stock at the RDC?
+
+Answer:
+
+Brooklyn RDC
+- Cycle Stock: 1,330.00 units
+- Pipeline Stock: 3,800.00 units
+- Safety Stock: 1,847.00 units
+
+I aggregated the three DC demands to get the RDC demand mean of 380 units/day (120 + 180 + 80) and the aggregate standard deviation of 116.62 using the square-root-of-sum-of-variances formula: sqrt(60^2 + 80^2 + 60^2) = 116.62. Cycle stock is 0.5 * 380 * 7 = 1,330 units. Pipeline stock is 380 * 10 = 3,800 units. Safety stock is z times sigma(R+L), which yields 1,847 units.
+
+--------------------------------------------------------------------------------
+2. What are the average inventory cost, transportation cost, and the total supply chain cost of the RDC (including all pipeline stock)? What is the total supply chain cost including the RDC and the three DCs?
+
+Answer:
+
+Brooklyn RDC
+- Annual Holding Cost: $1,395,400.87
+- Annual Transportation Cost: $416,100.00
+- Total Annual Cost: $1,811,500.87
+
+Total Supply Chain Cost (RDC + 3 DCs): $3,170,938.24
+
+I computed total inventory as cycle plus pipeline plus safety stock (1,330 + 3,800 + 1,847 = 6,977 units), then applied holding cost as unit value ($800) times holding rate (25%) times total inventory. Transportation cost for the RDC is $3.00 per unit times the RDC daily demand of 380 times 365 days. The RDC total cost is the sum of holding and transportation costs, and the full supply chain cost adds the RDC total ($1,811,500.87) to the three DC totals ($1,359,437.37).
+
+================================================================================
+PART FOUR
+================================================================================
+
+1. What are the total annual system safety stock inventory costs in these two scenarios? Which is better, a 10% demand uncertainty reduction, or a 10% supply (lead time) uncertainty reduction?
+
+Answer:
+
+Scenario 1: 10% Demand Uncertainty Reduction
+- Total Annual Safety Stock Holding Cost: $1,098,469.51
+
+Scenario 2: 10% Lead Time Uncertainty Reduction
+- Total Annual Safety Stock Holding Cost: $1,078,247.72
+
+Conclusion: Lead time uncertainty reduction is better (saves $20,221.79 more per year)
+
+I reduced each location's demand standard deviation by 10% for the demand-uncertainty scenario and recomputed sigma(R+L), safety stock, and safety-stock holding cost at each location, then summed across the three DCs and the RDC. I repeated the process using a 10% reduction in lead time standard deviation for the lead-time scenario. Comparing the totals shows that lead time uncertainty reduction yields the lower annual safety stock cost.
+
+--------------------------------------------------------------------------------
+2. What are the annual total inventory and transportation costs at each of the locations under the premium transportation provider? Which transportation segment(s) would you recommend that the HD3040 supply chain should switch to the new transportation provider?
+
+Answer:
+
+Premium Transport Costs by Location:
+
+Albany DC
+- Annual Holding Cost: $378,844.81
+- Annual Transportation Cost: $98,550.00
+- Total Annual Cost: $477,394.81
+
+Brooklyn DC
+- Annual Holding Cost: $270,875.95
+- Annual Transportation Cost: $18,396.00
+- Total Annual Cost: $289,271.95
+
+Syracuse DC
+- Annual Holding Cost: $282,511.28
+- Annual Transportation Cost: $74,460.00
+- Total Annual Cost: $356,971.28
+
+Brooklyn RDC
+- Annual Holding Cost: $1,167,400.87
+- Annual Transportation Cost: $485,450.00
+- Total Annual Cost: $1,652,850.87
+
+Total Premium Supply Chain Cost: $2,776,488.91
+Base Case Supply Chain Cost: $3,170,938.24
+Total Savings: $394,449.33
+
+Recommendation: Switch ALL transportation segments to the premium provider. Every location shows lower total cost under the premium provider because the inventory savings from reduced lead times more than offset the higher transportation rates.
+
+I replaced the base-case lead times and transport rates with the premium provider's values, then recomputed sigma(R+L), safety stock, total inventory, and holding cost for each location. Transportation cost was recalculated using the new per-unit rates. The total annual cost is holding plus transportation, and comparing each location's base case to the premium case shows all segments reduce total cost.
+
+--------------------------------------------------------------------------------
+3. Suppose Cosmo has invested in an ordering system that would link the RDC with the DCs electronically. As a result, the setup cost to place an order is significantly lower, so that the DCs can now order from the RDC once a day (instead of once a week). Please quantify the additional benefits you can gain from the base case of Part Three.
+
+Answer:
+
+Daily Ordering DC Costs:
+- Albany DC Total: $491,412.80
+- Brooklyn DC Total: $172,522.36
+- Syracuse DC Total: $380,262.80
+- Brooklyn RDC (unchanged): $1,811,500.87
+
+Total Annual Supply Chain Cost (DCs order daily): $2,855,698.83
+Base Case Total Supply Chain Cost (Part Three): $3,170,938.24
+Additional Benefit: $315,239.41 per year
+
+I set the DC reorder period to R = 1 day (instead of 7 days) while keeping all other parameters constant, then recomputed cycle stock (now 0.5 * lambda * 1), safety stock (with smaller sigma(R+L) due to shorter exposure period), total inventory, and holding cost for each DC. Transportation cost per unit remains unchanged since shipping frequency doesn't affect the per-unit rate. The RDC costs remain unchanged since the RDC still orders weekly from the plant. The benefit comes primarily from reduced cycle stock (1/7th of original) and reduced safety stock at the DCs.
+
+================================================================================
+End of Answer Key
+================================================================================
