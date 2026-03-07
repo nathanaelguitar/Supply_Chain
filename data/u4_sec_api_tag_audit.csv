@@ -1,0 +1,16 @@
+ticker,company,metric,selected_tag
+MMM,3M COMPANY,Accounts Receivable,AccountsReceivableNetCurrent
+MMM,3M COMPANY,Inventory,InventoryNet
+MMM,3M COMPANY,Accounts Payable,AccountsPayableCurrent
+MMM,3M COMPANY,Annual Sales,SalesRevenueNet;RevenueFromContractWithCustomerExcludingAssessedTax
+MMM,3M COMPANY,Annual COGS,CostOfRevenue
+PG,PROCTER & GAMBLE CO,Accounts Receivable,AccountsReceivableNetCurrent
+PG,PROCTER & GAMBLE CO,Inventory,InventoryNet
+PG,PROCTER & GAMBLE CO,Accounts Payable,AccountsPayableCurrent
+PG,PROCTER & GAMBLE CO,Annual Sales,SalesRevenueNet;Revenues
+PG,PROCTER & GAMBLE CO,Annual COGS,CostOfGoodsSold;CostOfGoodsAndServicesSold
+WMT,Walmart Inc.,Accounts Receivable,ReceivablesNetCurrent
+WMT,Walmart Inc.,Inventory,InventoryNet
+WMT,Walmart Inc.,Accounts Payable,AccountsPayableCurrent
+WMT,Walmart Inc.,Annual Sales,SalesRevenueNet;RevenueFromContractWithCustomerExcludingAssessedTax
+WMT,Walmart Inc.,Annual COGS,CostOfRevenue
