@@ -1,1 +1,12 @@
 interview_notes.md
+
+# Course material and graded-assignment keys — must not be public
+U2_ANSWER_KEY.txt
+U3_ANSWERS.md
+ASSIGNMENT_REQUIREMENTS*.txt
+ASSIGNMENT_REQUIREMENTS*.md
+
+# Python / macOS noise
+__pycache__/
+*.py[cod]
+.DS_Store
